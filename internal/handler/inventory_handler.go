@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"bistro/internal/dal"
 	"bistro/internal/service"
 	"bistro/models"
 	"encoding/json"
@@ -8,7 +9,7 @@ import (
 	"net/http"
 )
 
-func AddInventoryItem(w http.ResponseWriter, r *http.Request) {
+func AddInventoryItem(w http.ResponseWriter, r *http.Request, repo *dal.InventoryRepository) {
 	if r.Method != http.MethodPost {
 		sendError(w, http.StatusMethodNotAllowed, "Status Method Not Allowed", "Use post")
 		return
@@ -19,7 +20,7 @@ func AddInventoryItem(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	err = service.SaveItem(item)
+	err = service.SaveItem(item, repo)
 	if err != nil {
 		sendError(w, http.StatusInternalServerError, "Status Internal Server Error", err.Error())
 		return

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bistro/internal/dal"
 	"bistro/internal/handler"
 	"flag"
 	"fmt"
@@ -12,15 +13,20 @@ func main() {
 	flagDir := flag.String("dir", "data", "dir name")
 	flagPort := flag.Int("port", 8000, "Port number")
 	flag.Parse()
+
 	initStorage(*flagDir)
+	repo := dal.NewInventoryRepository(*flagDir)
 	addr := fmt.Sprintf(":%d", *flagPort)
-	http.HandleFunc("/inventory", inventoryHandler)
+	http.HandleFunc("/inventory", func(w http.ResponseWriter, r *http.Request) {
+		inventoryHandler(w, r, repo) // ← передали repo
+	})
+
 	http.ListenAndServe(addr, nil)
 }
 
-func inventoryHandler(w http.ResponseWriter, r *http.Request) {
+func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.InventoryRepository) {
 
-	handler.AddInventoryItem(w, r)
+	handler.AddInventoryItem(w, r, repo)
 }
 
 func initStorage(dir string) {
