@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -16,15 +18,28 @@ func main() {
 
 	initStorage(*flagDir)
 	repo := dal.NewInventoryRepository(*flagDir)
-	addr := fmt.Sprintf(":%d", *flagPort)
-	http.HandleFunc("/inventory", func(w http.ResponseWriter, r *http.Request) {
-		inventoryHandler(w, r, repo) // ← передали repo
+
+	// Создаём Gin роутер
+	r := gin.Default()
+
+	// Роуты
+	r.POST("/inventory", func(c *gin.Context) {
+		handler.AddInventoryItem(c, repo)
+	})
+	r.GET("/inventory", func(c *gin.Context) {
+		handler.GetAllItems(c, repo)
+	})
+	r.GET("/inventory/:id", func(c *gin.Context) {
+		handler.GetItemByID(c, repo)
 	})
 
-	http.ListenAndServe(addr, nil)
+	// Запуск
+	addr := fmt.Sprintf(":%d", *flagPort)
+	r.Run(addr)
 }
 
 func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.InventoryRepository) {
+	fmt.Println(r.URL.Path)
 	switch r.Method {
 	case http.MethodPost:
 		handler.AddInventoryItem(w, r, repo)
