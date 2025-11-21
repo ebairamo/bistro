@@ -35,3 +35,12 @@ func AddInventoryItem(w http.ResponseWriter, r *http.Request, repo *dal.Inventor
 
 	// TODO: вернуть успешный ответ
 }
+
+func GetAllItems(w http.ResponseWriter, r *http.Request, repo *dal.InventoryRepository) {
+	items, err := service.GetAllItems(repo)
+	if err != nil {
+		sendError(w, http.StatusInternalServerError, "StatusInternalServerError", err.Error())
+		return
+	}
+	json.NewEncoder(w).Encode(items)
+}

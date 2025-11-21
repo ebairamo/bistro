@@ -25,8 +25,13 @@ func main() {
 }
 
 func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.InventoryRepository) {
+	switch r.Method {
+	case http.MethodPost:
+		handler.AddInventoryItem(w, r, repo)
+	case http.MethodGet:
+		handler.GetAllItems(w, r, repo)
+	}
 
-	handler.AddInventoryItem(w, r, repo)
 }
 
 func initStorage(dir string) {

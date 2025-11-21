@@ -25,3 +25,7 @@ func SaveItem(item models.InventoryItem, repo *dal.InventoryRepository) error {
 	}
 	return nil
 }
+
+func GetAllItems(repo *dal.InventoryRepository) ([]models.InventoryItem, error) {
+	return repo.GetAllItems()
+}

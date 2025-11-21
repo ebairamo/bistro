@@ -3,6 +3,7 @@ package dal
 import (
 	"bistro/models"
 	"encoding/json"
+	"fmt"
 	"os"
 )
 
@@ -48,4 +49,23 @@ func (r *InventoryRepository) SaveItem(item models.InventoryItem) error {
 	}
 
 	return nil
+}
+
+func (r *InventoryRepository) GetAllItems() ([]models.InventoryItem, error) {
+	filepath := r.dataDir + "/inventory.json"
+	data, err := os.ReadFile(filepath)
+	if err != nil {
+		return nil, err
+	}
+	inventoryItem := []models.InventoryItem{}
+	err = json.Unmarshal(data, &inventoryItem)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(inventoryItem)
+	// TODO: прочитать файл
+	// TODO: распарсить JSON
+	// TODO: вернуть массив
+
+	return inventoryItem, nil
 }
