@@ -76,3 +76,15 @@ func UpdateInventoryItem(w http.ResponseWriter, r *http.Request, repo *dal.Inven
 		}
 	}
 }
+
+func DeleteItem(w http.ResponseWriter, r *http.Request, repo *dal.InventoryRepository) {
+	url := strings.Split(r.URL.Path, "/")
+	if len(url) == 3 {
+		err := service.DeleteItem(url[2], repo)
+		if err != nil {
+			sendError(w, http.StatusNotFound, "StatusNotFound", err.Error())
+			return
+		}
+		w.WriteHeader(http.StatusNoContent)
+	}
+}

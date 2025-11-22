@@ -46,6 +46,8 @@ func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.Inventor
 				handler.GetItem(w, r, repo)
 			case http.MethodPut:
 				handler.UpdateInventoryItem(w, r, repo)
+			case http.MethodDelete:
+				handler.DeleteItem(w, r, repo)
 			}
 		}
 	}

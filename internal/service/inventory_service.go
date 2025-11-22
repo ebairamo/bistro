@@ -50,3 +50,14 @@ func UpdateInventoryItem(id string, repo *dal.InventoryRepository, item models.I
 	}
 	return item, err
 }
+
+func DeleteItem(id string, repo *dal.InventoryRepository) error {
+	if id == "" {
+		return errors.New("id cannot be empty")
+	}
+	err := repo.DeleteItem(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

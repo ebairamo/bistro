@@ -124,3 +124,38 @@ func (r *InventoryRepository) UpdateInventoryItem(id string, item models.Invento
 	}
 	return item, nil
 }
+
+func (r *InventoryRepository) DeleteItem(id string) error {
+	filepath := r.dataDir + "/inventory.json"
+	file, err := os.ReadFile(filepath)
+	if err != nil {
+		return err
+	}
+	var items []models.InventoryItem
+	err = json.Unmarshal(file, &items)
+	if err != nil {
+		return err
+	}
+	var newItems []models.InventoryItem
+	isExsist := false
+	for _, item := range items {
+		if item.IngredientID == id {
+			isExsist = true
+			continue
+		}
+		newItems = append(newItems, item)
+	}
+	if !isExsist {
+		return errors.New("item is not Exists")
+	}
+	f, err := json.Marshal(newItems)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(filepath, f, 0666)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
