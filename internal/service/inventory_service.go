@@ -39,3 +39,14 @@ func GetItem(id string, repo *dal.InventoryRepository) (models.InventoryItem, er
 	}
 	return item, nil
 }
+
+func UpdateInventoryItem(id string, repo *dal.InventoryRepository, item models.InventoryItem) (models.InventoryItem, error) {
+	if id == "" {
+		return models.InventoryItem{}, errors.New("id cannot be empty")
+	}
+	item, err := repo.UpdateInventoryItem(id, item)
+	if err != nil {
+		return item, err
+	}
+	return item, err
+}

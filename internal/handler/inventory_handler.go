@@ -58,3 +58,21 @@ func GetItem(w http.ResponseWriter, r *http.Request, repo *dal.InventoryReposito
 		json.NewEncoder(w).Encode(item)
 	}
 }
+
+func UpdateInventoryItem(w http.ResponseWriter, r *http.Request, repo *dal.InventoryRepository) {
+	url := strings.Split(r.URL.Path, "/")
+	var item models.InventoryItem
+	json.NewDecoder(r.Body).Decode(&item)
+	if len(url) == 3 {
+		itemUpdated, err := service.UpdateInventoryItem(url[2], repo, item)
+		if err != nil {
+			sendError(w, http.StatusNotFound, "StatusNotFound", err.Error())
+			return
+		}
+		err = json.NewEncoder(w).Encode(itemUpdated)
+		if err != nil {
+			sendError(w, http.StatusInternalServerError, "StatusInternalServerError", err.Error())
+			return
+		}
+	}
+}

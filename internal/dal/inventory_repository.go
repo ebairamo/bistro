@@ -87,3 +87,40 @@ func (r *InventoryRepository) GetItem(id string) (models.InventoryItem, error) {
 
 	return models.InventoryItem{}, errors.New("item not found")
 }
+
+func (r *InventoryRepository) UpdateInventoryItem(id string, item models.InventoryItem) (models.InventoryItem, error) {
+	filepath := r.dataDir + "/inventory.json"
+	file, err := os.ReadFile(filepath)
+	if err != nil {
+		return item, err
+	}
+	var items []models.InventoryItem
+	var newItems []models.InventoryItem
+	isFound := false
+	err = json.Unmarshal(file, &items)
+	if err != nil {
+		return item, err
+	}
+
+	for _, ite := range items {
+		if ite.IngredientID == id {
+			newItems = append(newItems, item)
+			isFound = true
+			continue
+		}
+		newItems = append(newItems, ite)
+
+	}
+	if isFound == false {
+		return item, errors.New("id not found in inventory")
+	}
+	f, err := json.Marshal(newItems)
+	if err != nil {
+		return item, err
+	}
+	err = os.WriteFile(filepath, f, 0666)
+	if err != nil {
+		return item, err
+	}
+	return item, nil
+}
