@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 func AddInventoryItem(w http.ResponseWriter, r *http.Request, repo *dal.InventoryRepository) {
@@ -43,4 +44,17 @@ func GetAllItems(w http.ResponseWriter, r *http.Request, repo *dal.InventoryRepo
 		return
 	}
 	json.NewEncoder(w).Encode(items)
+}
+
+func GetItem(w http.ResponseWriter, r *http.Request, repo *dal.InventoryRepository) {
+	url := strings.Split(r.URL.Path, "/")
+	if len(url) == 3 {
+		item, err := service.GetItem(url[2], repo)
+		if err != nil {
+			fmt.Println(err)
+			sendError(w, http.StatusInternalServerError, "StatusInternalServerError", err.Error())
+			return
+		}
+		json.NewEncoder(w).Encode(item)
+	}
 }

@@ -29,3 +29,13 @@ func SaveItem(item models.InventoryItem, repo *dal.InventoryRepository) error {
 func GetAllItems(repo *dal.InventoryRepository) ([]models.InventoryItem, error) {
 	return repo.GetAllItems()
 }
+func GetItem(id string, repo *dal.InventoryRepository) (models.InventoryItem, error) {
+	if id == "" {
+		return models.InventoryItem{}, errors.New("id cannot be empty")
+	}
+	item, err := repo.GetItem(id)
+	if err != nil {
+		return item, err
+	}
+	return item, nil
+}

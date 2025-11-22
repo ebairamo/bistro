@@ -29,12 +29,23 @@ func main() {
 func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.InventoryRepository) {
 	fmt.Println(r.URL.Path)
 	url := strings.Split(r.URL.Path, "/")
-	fmt.Println(url, url[0])
-	switch r.Method {
-	case http.MethodPost:
-		handler.AddInventoryItem(w, r, repo)
-	case http.MethodGet:
-		handler.GetAllItems(w, r, repo)
+	fmt.Println(url, url[0], len(url))
+	switch url[1] {
+	case "inventory":
+		if len(url) == 2 {
+			switch r.Method {
+			case http.MethodPost:
+				handler.AddInventoryItem(w, r, repo)
+			case http.MethodGet:
+				handler.GetAllItems(w, r, repo)
+			}
+		}
+		if len(url) == 3 {
+			switch r.Method {
+			case http.MethodGet:
+				handler.GetItem(w, r, repo)
+			}
+		}
 	}
 
 }

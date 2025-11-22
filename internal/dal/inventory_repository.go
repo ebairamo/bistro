@@ -3,6 +3,7 @@ package dal
 import (
 	"bistro/models"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 )
@@ -68,4 +69,21 @@ func (r *InventoryRepository) GetAllItems() ([]models.InventoryItem, error) {
 	// TODO: вернуть массив
 
 	return inventoryItem, nil
+}
+
+func (r *InventoryRepository) GetItem(id string) (models.InventoryItem, error) {
+	filePath := r.dataDir + "/inventory.json"
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return models.InventoryItem{}, err
+	}
+	var items []models.InventoryItem
+	json.Unmarshal(data, &items)
+	for _, item := range items {
+		if id == item.IngredientID {
+			return item, nil
+		}
+	}
+
+	return models.InventoryItem{}, errors.New("item not found")
 }
