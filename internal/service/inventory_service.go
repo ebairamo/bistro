@@ -4,6 +4,7 @@ import (
 	"bistro/internal/dal"
 	"bistro/models"
 	"errors"
+	"log/slog"
 )
 
 func SaveItem(item models.InventoryItem, repo *dal.InventoryRepository) error {
@@ -23,6 +24,7 @@ func SaveItem(item models.InventoryItem, repo *dal.InventoryRepository) error {
 	if err != nil {
 		return err
 	}
+	slog.Info("Item added", "id", item.IngredientID, "name", item.Name)
 	return nil
 }
 
@@ -48,6 +50,7 @@ func UpdateInventoryItem(id string, repo *dal.InventoryRepository, item models.I
 	if err != nil {
 		return item, err
 	}
+	slog.Info("item updated", "id", id)
 	return item, err
 }
 
@@ -59,5 +62,6 @@ func DeleteItem(id string, repo *dal.InventoryRepository) error {
 	if err != nil {
 		return err
 	}
+	slog.Info("Item deleted", "id", id)
 	return nil
 }

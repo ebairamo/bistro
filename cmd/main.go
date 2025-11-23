@@ -5,6 +5,7 @@ import (
 	"bistro/internal/handler"
 	"flag"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 	"strings"
@@ -13,9 +14,15 @@ import (
 func main() {
 	flagDir := flag.String("dir", "data", "dir name")
 	flagPort := flag.Int("port", 8000, "Port number")
+	flagHelp := flag.Bool("help", false, "help flag")
 	flag.Parse()
-
+	slog.Info("StartingBistro", "port", *flagPort, "dataDir", *flagDir)
+	if *flagHelp {
+		help()
+		os.Exit(0)
+	}
 	initStorage(*flagDir)
+	slog.Info("Storage initialized")
 	repo := dal.NewInventoryRepository(*flagDir)
 	addr := fmt.Sprintf(":%d", *flagPort)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -23,13 +30,14 @@ func main() {
 		inventoryHandler(w, r, repo)
 	})
 
-	http.ListenAndServe(addr, nil)
+	err := http.ListenAndServe(addr, nil)
+	if err != nil {
+		slog.Error("Server failed", "error", err)
+	}
 }
 
 func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.InventoryRepository) {
-	fmt.Println(r.URL.Path)
 	url := strings.Split(r.URL.Path, "/")
-	fmt.Println(url, url[0], len(url))
 	switch url[1] {
 	case "inventory":
 		if len(url) == 2 {
@@ -57,7 +65,7 @@ func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.Inventor
 func initStorage(dir string) {
 	err := os.Mkdir(dir, 0666)
 	if err != nil {
-		fmt.Println(err)
+		slog.Error("dir exists", "error", err)
 	}
 	inventoryDir := dir + "/inventory.json"
 	_, err = os.Stat(inventoryDir)
@@ -65,11 +73,25 @@ func initStorage(dir string) {
 		if os.IsNotExist(err) {
 			file, err := os.Create(inventoryDir)
 			if err != nil {
-				fmt.Println(err)
+				slog.Error("file exist", "error", err)
 			}
 			file.WriteString("[]")
 			file.Close()
 		}
 	}
 
+}
+
+func help() {
+	fmt.Println(`$ ./bistro --help
+Bistro Management System
+
+Usage:
+  hot-coffee [--port <N>] [--dir <S>] 
+  hot-coffee --help
+
+Options:
+  --help       Show this screen.
+  --port N     Port number.
+  --dir S      Path to the data directory.`)
 }
