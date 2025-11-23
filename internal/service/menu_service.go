@@ -64,3 +64,11 @@ func UpdateMenuItem(menu *dal.MenuRepository, id string, menuItem models.MenuIte
 	}
 	return nil
 }
+
+func DeleteMenuItem(id string, menuRepo *dal.MenuRepository) error {
+	err := menuRepo.DeleteMenuItem(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
