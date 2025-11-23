@@ -72,6 +72,8 @@ func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.Inventor
 			switch r.Method {
 			case http.MethodGet:
 				handler.GetMenuItem(w, r, menuRepo, url[2])
+			case http.MethodPut:
+				handler.UpdateMenuItem(w, r, menuRepo, url[2])
 			}
 		}
 	}

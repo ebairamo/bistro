@@ -40,3 +40,27 @@ func GetMenuItem(menu *dal.MenuRepository, id string) (models.MenuItem, error) {
 
 	return menu.GetMenuItem(id)
 }
+
+func UpdateMenuItem(menu *dal.MenuRepository, id string, menuItem models.MenuItem) error {
+	if menuItem.ID == "" {
+		return errors.New("ingredient_id cannot be empty")
+	}
+	if menuItem.Name == "" {
+		return errors.New("item name  cannot be empty")
+	}
+	if menuItem.Price <= 0 {
+		return errors.New("price can not be <= 0")
+	}
+	if menuItem.Description == "" {
+		return errors.New("Description cannot be empty")
+	}
+	if len(menuItem.Ingredients) == 0 {
+		return errors.New("ingredients cannot be empty")
+	}
+
+	err := menu.UpdateMenuItem(id, menuItem)
+	if err != nil {
+		return err
+	}
+	return nil
+}

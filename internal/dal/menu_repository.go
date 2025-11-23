@@ -74,3 +74,37 @@ func (r *MenuRepository) GetMenuItem(id string) (models.MenuItem, error) {
 	}
 	return models.MenuItem{}, errors.New("menuItem not found")
 }
+
+func (r *MenuRepository) UpdateMenuItem(id string, menuItem models.MenuItem) error {
+	filepath := r.dataDir + "/menu.json"
+	file, err := os.ReadFile(filepath)
+	if err != nil {
+		return err
+	}
+	var menuItems []models.MenuItem
+	var newMenuItems []models.MenuItem
+	isFound := false
+	err = json.Unmarshal(file, &menuItems)
+	if err != nil {
+		return err
+	}
+	for _, item := range menuItems {
+		if item.ID == id {
+			isFound = true
+			newMenuItems = append(newMenuItems, menuItem)
+		}
+		newMenuItems = append(newMenuItems, item)
+	}
+	if !isFound {
+		return errors.New("menu item not found")
+	}
+	f, err := json.Marshal(newMenuItems)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(filepath, f, 0666)
+	if err != nil {
+		return err
+	}
+	return nil
+}

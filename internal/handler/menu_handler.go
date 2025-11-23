@@ -47,3 +47,20 @@ func GetMenuItem(w http.ResponseWriter, r *http.Request, menuRepo *dal.MenuRepos
 	json.NewEncoder(w).Encode(menuItem)
 
 }
+
+func UpdateMenuItem(w http.ResponseWriter, r *http.Request, menuRepo *dal.MenuRepository, id string) {
+	var menuItem models.MenuItem
+
+	err := json.NewDecoder(r.Body).Decode(&menuItem)
+	if err != nil {
+		sendError(w, http.StatusBadRequest, "StatusBadRequest", err.Error())
+		return
+	}
+	err = service.UpdateMenuItem(menuRepo, id, menuItem)
+	if err != nil {
+		sendError(w, http.StatusNotFound, "StatusNotFound", err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(menuItem)
+}
