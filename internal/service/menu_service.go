@@ -20,10 +20,18 @@ func AddMenuItem(menu *dal.MenuRepository, menuItem models.MenuItem) error {
 	if menuItem.Description == "" {
 		return errors.New("Description cannot be empty")
 	}
+	if len(menuItem.Ingredients) == 0 {
+		return errors.New("ingredients cannot be empty")
+	}
 	err := menu.AddMenuItem(menuItem)
 	if err != nil {
 		return err
 	}
 	slog.Info("Item added", "id", menuItem.ID, "name", menuItem.Name)
 	return nil
+}
+
+func GetMenuAllItems(menu *dal.MenuRepository) ([]models.MenuItem, error) {
+
+	return menu.GetMenuAllItems()
 }

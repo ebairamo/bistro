@@ -15,6 +15,7 @@ func AddMenuItem(w http.ResponseWriter, r *http.Request, menuRepo *dal.MenuRepos
 		sendError(w, http.StatusInternalServerError, "StatusInternalServerError", err.Error())
 		return
 	}
+
 	err = service.AddMenuItem(menuRepo, menu)
 	if err != nil {
 		sendError(w, http.StatusInternalServerError, "Status Internal Server Error", err.Error())
@@ -22,4 +23,15 @@ func AddMenuItem(w http.ResponseWriter, r *http.Request, menuRepo *dal.MenuRepos
 	}
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(menu)
+}
+
+func GetMenuAllItems(w http.ResponseWriter, r *http.Request, menuRepo *dal.MenuRepository) {
+
+	menuItems, err := service.GetMenuAllItems(menuRepo)
+	if err != nil {
+		sendError(w, http.StatusNotFound, "StatusNotFound", err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(menuItems)
 }
