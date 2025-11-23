@@ -28,7 +28,7 @@ func main() {
 	addr := fmt.Sprintf(":%d", *flagPort)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(r.URL.Path)
-		inventoryHandler(w, r, repo)
+		inventoryHandler(w, r, repo, menuRepo)
 	})
 
 	err := http.ListenAndServe(addr, nil)
@@ -37,7 +37,7 @@ func main() {
 	}
 }
 
-func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.InventoryRepository) {
+func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.InventoryRepository, menuRepo *dal.MenuRepository) {
 	url := strings.Split(r.URL.Path, "/")
 	switch url[1] {
 	case "inventory":
@@ -67,7 +67,6 @@ func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.Inventor
 			}
 		}
 	}
-
 }
 
 func initStorage(dir string) {
@@ -76,6 +75,7 @@ func initStorage(dir string) {
 		slog.Error("dir exists", "error", err)
 	}
 	inventoryDir := dir + "/inventory.json"
+	menuDir := dir + "/menu.json"
 	_, err = os.Stat(inventoryDir)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -87,7 +87,17 @@ func initStorage(dir string) {
 			file.Close()
 		}
 	}
-
+	_, err = os.Stat(menuDir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			file, err := os.Create(menuDir)
+			if err != nil {
+				slog.Error("file exist", "error", err)
+			}
+			file.WriteString("[]")
+			file.Close()
+		}
+	}
 }
 
 func help() {

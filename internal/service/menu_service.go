@@ -1,0 +1,29 @@
+package service
+
+import (
+	"bistro/internal/dal"
+	"bistro/models"
+	"errors"
+	"log/slog"
+)
+
+func AddMenuItem(menu *dal.MenuRepository, menuItem models.MenuItem) error {
+	if menuItem.ID == "" {
+		return errors.New("ingredient_id cannot be empty")
+	}
+	if menuItem.Name == "" {
+		return errors.New("item name  cannot be empty")
+	}
+	if menuItem.Price <= 0 {
+		return errors.New("price can not be <= 0")
+	}
+	if menuItem.Description == "" {
+		return errors.New("Description cannot be empty")
+	}
+	err := menu.AddMenuItem(menuItem)
+	if err != nil {
+		return err
+	}
+	slog.Info("Item added", "id", menuItem.ID, "name", menuItem.Name)
+	return nil
+}
