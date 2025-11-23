@@ -24,6 +24,7 @@ func main() {
 	initStorage(*flagDir)
 	slog.Info("Storage initialized")
 	repo := dal.NewInventoryRepository(*flagDir)
+	menuRepo := dal.NewMenuRepository(*flagDir)
 	addr := fmt.Sprintf(":%d", *flagPort)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(r.URL.Path)
@@ -56,6 +57,13 @@ func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.Inventor
 				handler.UpdateInventoryItem(w, r, repo)
 			case http.MethodDelete:
 				handler.DeleteItem(w, r, repo)
+			}
+		}
+	case "menu":
+		if len(url) == 2 {
+			switch r.Method {
+			case http.MethodPost:
+				handler.AddMenuItem(w, r, menuRepo)
 			}
 		}
 	}
