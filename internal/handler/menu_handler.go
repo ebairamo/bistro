@@ -35,3 +35,15 @@ func GetMenuAllItems(w http.ResponseWriter, r *http.Request, menuRepo *dal.MenuR
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(menuItems)
 }
+
+func GetMenuItem(w http.ResponseWriter, r *http.Request, menuRepo *dal.MenuRepository, id string) {
+
+	menuItem, err := service.GetMenuItem(menuRepo, id)
+	if err != nil {
+		sendError(w, http.StatusNotFound, "StatusNotFound", err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(menuItem)
+
+}

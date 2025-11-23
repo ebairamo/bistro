@@ -35,3 +35,8 @@ func GetMenuAllItems(menu *dal.MenuRepository) ([]models.MenuItem, error) {
 
 	return menu.GetMenuAllItems()
 }
+
+func GetMenuItem(menu *dal.MenuRepository, id string) (models.MenuItem, error) {
+
+	return menu.GetMenuItem(id)
+}

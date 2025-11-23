@@ -68,6 +68,12 @@ func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.Inventor
 				handler.GetMenuAllItems(w, r, menuRepo)
 			}
 		}
+		if len(url) == 3 {
+			switch r.Method {
+			case http.MethodGet:
+				handler.GetMenuItem(w, r, menuRepo, url[2])
+			}
+		}
 	}
 }
 
