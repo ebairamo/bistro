@@ -17,7 +17,7 @@ func PostOrder(order models.Order, ordersRepo *dal.OrdersRepository) error {
 		return errors.New("CreatedAt cannot be empry")
 	}
 	if order.Status == "" {
-		return errors.New("Status cannot be empry")
+		return errors.New("status cannot be empry")
 	}
 	for _, item := range order.Items {
 		if item.ProductID == "" {

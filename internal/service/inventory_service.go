@@ -18,7 +18,7 @@ func SaveItem(item models.InventoryItem, repo *dal.InventoryRepository) error {
 		return errors.New("quantity can not be <= 0")
 	}
 	if item.Unit == "" {
-		return errors.New("Unit cannot be empty")
+		return errors.New("unit cannot be empty")
 	}
 	err := repo.SaveItem(item)
 	if err != nil {

@@ -18,7 +18,7 @@ func AddMenuItem(menu *dal.MenuRepository, menuItem models.MenuItem) error {
 		return errors.New("price can not be <= 0")
 	}
 	if menuItem.Description == "" {
-		return errors.New("Description cannot be empty")
+		return errors.New("description cannot be empty")
 	}
 	if len(menuItem.Ingredients) == 0 {
 		return errors.New("ingredients cannot be empty")
@@ -52,7 +52,7 @@ func UpdateMenuItem(menu *dal.MenuRepository, id string, menuItem models.MenuIte
 		return errors.New("price can not be <= 0")
 	}
 	if menuItem.Description == "" {
-		return errors.New("Description cannot be empty")
+		return errors.New("description cannot be empty")
 	}
 	if len(menuItem.Ingredients) == 0 {
 		return errors.New("ingredients cannot be empty")
