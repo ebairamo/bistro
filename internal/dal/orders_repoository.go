@@ -204,3 +204,73 @@ func (r *OrdersRepository) UpdateOrderById(id string, status models.OrderStatus)
 	}
 	return orderToReturn, nil
 }
+
+func (r *OrdersRepository) DeleteOrder(id string) error {
+	filepath := r.dataDir + "/orders.json"
+	file, err := os.ReadFile(filepath)
+	if err != nil {
+		return err
+	}
+	var orders []models.Order
+	var newOrders []models.Order
+	isFound := false
+	err = json.Unmarshal(file, &orders)
+	if err != nil {
+		return err
+	}
+	for _, order := range orders {
+		if order.ID == id {
+			isFound = true
+			continue
+		}
+		newOrders = append(newOrders, order)
+	}
+	if !isFound {
+		return errors.New("order not found")
+	}
+	f, err := json.Marshal(newOrders)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(filepath, f, 0666)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *OrdersRepository) CloseOrders(id string) error {
+	filepath := r.dataDir + "/orders.json"
+	file, err := os.ReadFile(filepath)
+	if err != nil {
+		return err
+	}
+	var orders []models.Order
+	var newOrders []models.Order
+	isExist := false
+	err = json.Unmarshal(file, &orders)
+	if err != nil {
+		return err
+	}
+	for _, order := range orders {
+		if order.ID == id {
+			order.Status = "close"
+			newOrders = append(newOrders, order)
+			isExist = true
+			continue
+		}
+		newOrders = append(newOrders, order)
+	}
+	if !isExist {
+		return errors.New("order not found")
+	}
+	f, err := json.Marshal(newOrders)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(filepath, f, 0666)
+	if err != nil {
+		return err
+	}
+	return nil
+}

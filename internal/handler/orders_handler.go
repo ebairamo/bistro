@@ -57,3 +57,22 @@ func UpdateOrderById(w http.ResponseWriter, r *http.Request, ordersRepo *dal.Ord
 	}
 	json.NewEncoder(w).Encode(order)
 }
+
+func DeleteOrder(w http.ResponseWriter, r *http.Request, ordersRepo *dal.OrdersRepository, id string) {
+
+	err := service.DeleteOrder(id, ordersRepo)
+	if err != nil {
+		sendError(w, http.StatusInternalServerError, "StatusInternalServerError", err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func CloseOrders(w http.ResponseWriter, r *http.Request, ordersRepo *dal.OrdersRepository, id string) {
+	err := service.CloseOrders(id, ordersRepo)
+	if err != nil {
+		sendError(w, http.StatusInternalServerError, "StatusInternalServerError", err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}

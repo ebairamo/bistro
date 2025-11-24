@@ -94,6 +94,10 @@ func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.Inventor
 				handler.GetOrderById(w, r, ordersRepo, url[2])
 			case http.MethodPut:
 				handler.UpdateOrderById(w, r, ordersRepo, url[2])
+			case http.MethodDelete:
+				handler.DeleteOrder(w, r, ordersRepo, url[2])
+			case http.MethodPost:
+				handler.CloseOrders(w, r, ordersRepo, url[2])
 			}
 		}
 	}

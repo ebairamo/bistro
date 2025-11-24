@@ -57,3 +57,19 @@ func UpdateOrderById(ordersRepo *dal.OrdersRepository, id string, status models.
 	}
 	return order, nil
 }
+
+func DeleteOrder(id string, ordersRepo *dal.OrdersRepository) error {
+	err := ordersRepo.DeleteOrder(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func CloseOrders(id string, ordersRepo *dal.OrdersRepository) error {
+	err := ordersRepo.CloseOrders(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
