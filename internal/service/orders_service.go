@@ -1,0 +1,35 @@
+package service
+
+import (
+	"bistro/internal/dal"
+	"bistro/models"
+	"errors"
+)
+
+func PostOrder(order models.Order, ordersRepo *dal.OrdersRepository) error {
+	if order.ID == "" {
+		return errors.New("order id cannot be empty")
+	}
+	if order.CustomerName == "" {
+		return errors.New("CustomerName cannot be empty")
+	}
+	if order.CreatedAt == "" {
+		return errors.New("CreatedAt cannot be empry")
+	}
+	if order.Status == "" {
+		return errors.New("Status cannot be empry")
+	}
+	for _, item := range order.Items {
+		if item.ProductID == "" {
+			return errors.New("item ProductId cannot be empty")
+		}
+		if item.Quantity <= 0 {
+			return errors.New("item.Quantity cannot be <= 0")
+		}
+	}
+	err := ordersRepo.PostOrder(order)
+	if err != nil {
+		return err
+	}
+	return nil
+}

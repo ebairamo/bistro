@@ -25,10 +25,11 @@ func main() {
 	slog.Info("Storage initialized")
 	repo := dal.NewInventoryRepository(*flagDir)
 	menuRepo := dal.NewMenuRepository(*flagDir)
+	ordersRepo := dal.NewOrdersRepository(*flagDir)
 	addr := fmt.Sprintf(":%d", *flagPort)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(r.URL.Path)
-		inventoryHandler(w, r, repo, menuRepo)
+		inventoryHandler(w, r, repo, menuRepo, ordersRepo)
 	})
 
 	err := http.ListenAndServe(addr, nil)
@@ -37,7 +38,7 @@ func main() {
 	}
 }
 
-func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.InventoryRepository, menuRepo *dal.MenuRepository) {
+func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.InventoryRepository, menuRepo *dal.MenuRepository, ordersRepo *dal.OrdersRepository) {
 	url := strings.Split(r.URL.Path, "/")
 	switch url[1] {
 	case "inventory":
@@ -78,6 +79,13 @@ func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.Inventor
 				handler.DeleteMenuItem(w, r, menuRepo, url[2])
 			}
 		}
+	case "orders":
+		if len(url) == 2 {
+			switch r.Method {
+			case http.MethodPost:
+				handler.PostOrder(w, r, ordersRepo)
+			}
+		}
 	}
 }
 
@@ -88,6 +96,7 @@ func initStorage(dir string) {
 	}
 	inventoryDir := dir + "/inventory.json"
 	menuDir := dir + "/menu.json"
+	ordersDir := dir + "/orders.json"
 	_, err = os.Stat(inventoryDir)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -103,6 +112,17 @@ func initStorage(dir string) {
 	if err != nil {
 		if os.IsNotExist(err) {
 			file, err := os.Create(menuDir)
+			if err != nil {
+				slog.Error("file exist", "error", err)
+			}
+			file.WriteString("[]")
+			file.Close()
+		}
+	}
+	_, err = os.Stat(ordersDir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			file, err := os.Create(ordersDir)
 			if err != nil {
 				slog.Error("file exist", "error", err)
 			}
