@@ -24,3 +24,21 @@ func PostOrder(w http.ResponseWriter, r *http.Request, ordersRepo *dal.OrdersRep
 	json.NewEncoder(w).Encode(order)
 
 }
+
+func GetAllOrders(w http.ResponseWriter, r *http.Request, ordersRepo *dal.OrdersRepository) {
+	orders, err := service.GetAllOrders(ordersRepo)
+	if err != nil {
+		sendError(w, http.StatusInternalServerError, "StatusInternalServerError", err.Error())
+		return
+	}
+	json.NewEncoder(w).Encode(orders)
+}
+
+func GetOrderById(w http.ResponseWriter, r *http.Request, ordersRepo *dal.OrdersRepository, id string) {
+	order, err := service.GetOrderById(ordersRepo, id)
+	if err != nil {
+		sendError(w, http.StatusInternalServerError, "StatusInternalServerError", err.Error())
+		return
+	}
+	json.NewEncoder(w).Encode(order)
+}

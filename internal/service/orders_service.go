@@ -33,3 +33,19 @@ func PostOrder(order models.Order, ordersRepo *dal.OrdersRepository) error {
 	}
 	return nil
 }
+
+func GetAllOrders(ordersRepo *dal.OrdersRepository) ([]models.Order, error) {
+	orders, err := ordersRepo.GetAllOrders()
+	if err != nil {
+		return nil, err
+	}
+	return orders, nil
+}
+
+func GetOrderById(ordersRepo *dal.OrdersRepository, id string) ([]models.Order, error) {
+	order, err := ordersRepo.GetOrderById(id)
+	if err != nil {
+		return err
+	}
+	return order, err
+}

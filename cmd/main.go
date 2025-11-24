@@ -84,6 +84,14 @@ func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.Inventor
 			switch r.Method {
 			case http.MethodPost:
 				handler.PostOrder(w, r, ordersRepo)
+			case http.MethodGet:
+				handler.GetAllOrders(w, r, ordersRepo)
+			}
+		}
+		if len(url) == 3 {
+			switch r.Method {
+			case http.MethodGet:
+				handler.GetOrderById(w, r, ordersRepo, url[2])
 			}
 		}
 	}

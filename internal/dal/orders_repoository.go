@@ -131,3 +131,17 @@ func (r *OrdersRepository) PostOrder(order models.Order) error {
 	}
 	return nil
 }
+
+func (r *OrdersRepository) GetAllOrders() ([]models.Order, error) {
+	filepath := r.dataDir + "/orders.json"
+	var orders []models.Order
+	file, err := os.ReadFile(filepath)
+	if err != nil {
+		return orders, err
+	}
+	err = json.Unmarshal(file, &orders)
+	if err != nil {
+		return orders, err
+	}
+	return orders, nil
+}
