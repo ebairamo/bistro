@@ -42,3 +42,18 @@ func GetOrderById(w http.ResponseWriter, r *http.Request, ordersRepo *dal.Orders
 	}
 	json.NewEncoder(w).Encode(order)
 }
+
+func UpdateOrderById(w http.ResponseWriter, r *http.Request, ordersRepo *dal.OrdersRepository, id string) {
+	var status models.OrderStatus
+	err := json.NewDecoder(r.Body).Decode(&status)
+	if err != nil {
+		sendError(w, http.StatusInternalServerError, "StatusInternalServerError", err.Error())
+		return
+	}
+	order, err := service.UpdateOrderById(ordersRepo, id, status)
+	if err != nil {
+		sendError(w, http.StatusInternalServerError, "StatusInternalServerError", err.Error())
+		return
+	}
+	json.NewEncoder(w).Encode(order)
+}

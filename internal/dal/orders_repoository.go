@@ -166,3 +166,41 @@ func (r *OrdersRepository) GetOrderById(id string) (models.Order, error) {
 	return models.Order{}, errors.New("order not found")
 
 }
+
+func (r *OrdersRepository) UpdateOrderById(id string, status models.OrderStatus) (models.Order, error) {
+	filepath := r.dataDir + "/orders.json"
+	var orders []models.Order
+	var newOrders []models.Order
+	file, err := os.ReadFile(filepath)
+	if err != nil {
+		return models.Order{}, err
+	}
+	err = json.Unmarshal(file, &orders)
+	if err != nil {
+		return models.Order{}, err
+	}
+	isFound := false
+	var orderToReturn models.Order
+	for _, order := range orders {
+		if order.ID == id {
+			order.Status = status.Status
+			newOrders = append(newOrders, order)
+			isFound = true
+			orderToReturn = order
+			continue
+		}
+		newOrders = append(newOrders, order)
+	}
+	if !isFound {
+		return models.Order{}, errors.New("order not found by id")
+	}
+	f, err := json.Marshal(newOrders)
+	if err != nil {
+		return models.Order{}, err
+	}
+	err = os.WriteFile(filepath, f, 0666)
+	if err != nil {
+		return models.Order{}, err
+	}
+	return orderToReturn, nil
+}

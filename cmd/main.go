@@ -92,6 +92,8 @@ func inventoryHandler(w http.ResponseWriter, r *http.Request, repo *dal.Inventor
 			switch r.Method {
 			case http.MethodGet:
 				handler.GetOrderById(w, r, ordersRepo, url[2])
+			case http.MethodPut:
+				handler.UpdateOrderById(w, r, ordersRepo, url[2])
 			}
 		}
 	}

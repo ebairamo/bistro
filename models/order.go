@@ -12,3 +12,7 @@ type OrderItem struct {
 	ProductID string `json:"product_id"`
 	Quantity  int    `json:"quantity"`
 }
+
+type OrderStatus struct {
+	Status string `json:"status"`
+}

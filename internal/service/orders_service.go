@@ -49,3 +49,11 @@ func GetOrderById(ordersRepo *dal.OrdersRepository, id string) (models.Order, er
 	}
 	return order, err
 }
+
+func UpdateOrderById(ordersRepo *dal.OrdersRepository, id string, status models.OrderStatus) (models.Order, error) {
+	order, err := ordersRepo.UpdateOrderById(id, status)
+	if err != nil {
+		return order, err
+	}
+	return order, nil
+}
