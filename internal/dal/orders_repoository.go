@@ -145,3 +145,24 @@ func (r *OrdersRepository) GetAllOrders() ([]models.Order, error) {
 	}
 	return orders, nil
 }
+
+func (r *OrdersRepository) GetOrderById(id string) (models.Order, error) {
+
+	filepath := r.dataDir + "/orders.json"
+	var orders []models.Order
+	file, err := os.ReadFile(filepath)
+	if err != nil {
+		return models.Order{}, err
+	}
+	err = json.Unmarshal(file, &orders)
+	if err != nil {
+		return models.Order{}, err
+	}
+	for _, order := range orders {
+		if order.ID == id {
+			return order, nil
+		}
+	}
+	return models.Order{}, errors.New("order not found")
+
+}

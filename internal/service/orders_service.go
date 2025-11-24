@@ -42,10 +42,10 @@ func GetAllOrders(ordersRepo *dal.OrdersRepository) ([]models.Order, error) {
 	return orders, nil
 }
 
-func GetOrderById(ordersRepo *dal.OrdersRepository, id string) ([]models.Order, error) {
+func GetOrderById(ordersRepo *dal.OrdersRepository, id string) (models.Order, error) {
 	order, err := ordersRepo.GetOrderById(id)
 	if err != nil {
-		return err
+		return models.Order{}, err
 	}
 	return order, err
 }
